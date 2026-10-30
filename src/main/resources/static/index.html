@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f2">
+    <title>Meu Controle | Gastos pessoais</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+</head>
+<body>
+    <main class="app-shell">
+        <header class="topbar">
+            <a class="brand" href="/" aria-label="Meu Controle, página inicial">
+                <span class="brand-mark" aria-hidden="true">M</span>
+                <span>meu<span class="brand-light">controle</span></span>
+            </a>
+            <p class="topbar-note">Suas finanças, em equilíbrio.</p>
+        </header>
+
+        <section class="page-heading" aria-labelledby="page-title">
+            <div>
+                <p class="eyebrow">VISÃO GERAL</p>
+                <h1 id="page-title">Seu dinheiro, <span>sob controle.</span></h1>
+                <p class="page-description">Acompanhe suas entradas e saídas em um só lugar.</p>
+            </div>
+            <label class="month-picker">
+                <span>Mês de referência</span>
+                <input id="month-filter" type="month" aria-label="Filtrar transações por mês">
+            </label>
+        </section>
+
+        <section class="summary-grid" aria-label="Resumo financeiro do mês">
+            <article class="summary-card income-card">
+                <div class="summary-label"><span class="summary-icon" aria-hidden="true">↗</span> Receitas</div>
+                <p id="income-total" class="summary-value">R$ 0,00</p>
+                <p class="summary-caption">Entradas no período</p>
+            </article>
+            <article class="summary-card expense-card">
+                <div class="summary-label"><span class="summary-icon" aria-hidden="true">↘</span> Despesas</div>
+                <p id="expense-total" class="summary-value">R$ 0,00</p>
+                <p class="summary-caption">Saídas no período</p>
+            </article>
+            <article class="summary-card balance-card">
+                <div class="summary-label"><span class="summary-icon" aria-hidden="true">＝</span> Saldo do mês</div>
+                <p id="balance-total" class="summary-value">R$ 0,00</p>
+                <p class="summary-caption">Receitas menos despesas</p>
+            </article>
+        </section>
+
+        <div class="content-grid">
+            <section class="panel form-panel" aria-labelledby="form-title">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">NOVO REGISTRO</p>
+                        <h2 id="form-title">Adicionar transação</h2>
+                    </div>
+                    <span class="heading-icon" aria-hidden="true">＋</span>
+                </div>
+                <form id="transaction-form">
+                    <label class="field">
+                        <span>Descrição</span>
+                        <input id="description" name="descricao" type="text" placeholder="Ex.: Compras do mês" required maxlength="255">
+                    </label>
+                    <div class="field-row">
+                        <label class="field">
+                            <span>Valor</span>
+                            <div class="input-with-prefix">
+                                <span aria-hidden="true">R$</span>
+                                <input id="amount" name="valor" type="number" placeholder="0,00" min="0.01" step="0.01" required>
+                            </div>
+                        </label>
+                        <label class="field">
+                            <span>Data</span>
+                            <input id="date" name="data" type="date" required>
+                        </label>
+                    </div>
+                    <div class="field-row">
+                        <label class="field">
+                            <span>Tipo</span>
+                            <select id="type" name="tipo" required>
+                                <option value="" selected disabled>Selecione</option>
+                                <option value="RECEITA">Receita</option>
+                                <option value="DESPESA">Despesa</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Categoria</span>
+                            <select id="category" name="categoria" required>
+                                <option value="" selected disabled>Carregando...</option>
+                            </select>
+                        </label>
+                    </div>
+                    <p id="form-message" class="message" role="status" aria-live="polite"></p>
+                    <button id="submit-button" class="primary-button" type="submit">
+                        <span aria-hidden="true">＋</span> Salvar transação
+                    </button>
+                    <button id="cancel-edit" class="secondary-button" type="button" hidden>Cancelar edição</button>
+                </form>
+                <section class="category-creator" aria-labelledby="category-title">
+                    <div class="category-heading">
+                        <div>
+                            <p class="eyebrow">ORGANIZAÇÃO</p>
+                            <h2 id="category-title">Categorias</h2>
+                        </div>
+                        <span class="heading-icon" aria-hidden="true">⌑</span>
+                    </div>
+                    <form id="category-form">
+                        <label class="field" for="category-name">
+                            <span>Nome da categoria</span>
+                            <input id="category-name" name="nome" type="text" placeholder="Ex.: Alimentação" maxlength="255" required>
+                        </label>
+                        <p id="category-message" class="message" role="status" aria-live="polite"></p>
+                        <button id="category-submit" class="primary-button" type="submit">
+                            <span aria-hidden="true">＋</span> Criar categoria
+                        </button>
+                        <button id="category-cancel-edit" class="secondary-button" type="button" hidden>Cancelar edição</button>
+                    </form>
+                    <div id="category-list" class="category-list" aria-live="polite">
+                        <p class="category-list-message">Carregando categorias...</p>
+                    </div>
+                </section>
+            </section>
+
+            <section class="panel transactions-panel" aria-labelledby="transactions-title">
+                <div class="panel-heading transactions-heading">
+                    <div>
+                        <p class="eyebrow">MOVIMENTAÇÕES</p>
+                        <h2 id="transactions-title">Transações do mês</h2>
+                    </div>
+                    <span id="transaction-count" class="count-badge">0 registros</span>
+                </div>
+                <div id="transaction-list" class="transaction-list" aria-live="polite">
+                    <p class="list-message">Carregando transações...</p>
+                </div>
+            </section>
+        </div>
+        <footer class="footer">Um passo de cada vez. <span>Você está no controle.</span></footer>
+    </main>
+</body>
+</html>
