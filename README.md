@@ -1,5 +1,7 @@
 # Controle de Gastos Pessoais
 
+Repositório: https://github.com/Pedro-Nex/controle-gastos
+
 Aplicação web simples para registrar receitas e despesas por categoria, acompanhar as movimentações do mês e consultar receitas, despesas e saldo. O backend é uma API REST Java e a interface estática é servida pelo Spring Boot.
 
 ## Tecnologias
@@ -22,7 +24,7 @@ Aplicação web simples para registrar receitas e despesas por categoria, acompa
 
 ## Rodar localmente
 
-Requisitos: Java 21, Docker ou PostgreSQL local com um banco chamado `controle_gastos`.
+Requisitos: Java 21 e PostgreSQL local com um banco chamado `controle_gastos`.
 
 Configure as variáveis de ambiente antes de iniciar. No PowerShell:
 
@@ -53,24 +55,16 @@ Os testes de service usam Mockito; os testes MVC verificam autenticação, valid
 - HTTP Basic exige credenciais externas ao código. Defina `APP_SECURITY_USERNAME` e `APP_SECURITY_PASSWORD` no ambiente de execução; a senha é armazenada em memória usando BCrypt. Em produção, use HTTPS e dados fictícios.
 - O schema permanece com `spring.jpa.hibernate.ddl-auto=update` para facilitar a demonstração local. Para produção, migrar a criação/evolução do schema para Flyway é um próximo passo.
 
-## Docker e publicação
+## Publicar sem Docker
 
-O `Dockerfile` constrói a aplicação com Java 21. Para executar localmente:
+O projeto pode ser publicado no Railway usando o builder Railpack, que detecta Java/Maven pelo `pom.xml` e compila a aplicação sem exigir um Dockerfile:
 
-```powershell
-docker build -t controle-gastos .
-docker run --rm -p 8080:8080 `
-  -e SPRING_DATASOURCE_URL="jdbc:postgresql://host.docker.internal:5432/controle_gastos" `
-  -e SPRING_DATASOURCE_USERNAME="postgres" `
-  -e SPRING_DATASOURCE_PASSWORD="sua-senha-local" `
-  -e APP_SECURITY_USERNAME="demo" `
-  -e APP_SECURITY_PASSWORD="escolha-uma-senha-local" `
-  controle-gastos
-```
+1. Crie um projeto no Railway e adicione um serviço conectado ao repositório `Pedro-Nex/controle-gastos`, branch `main`.
+2. Selecione Railpack como builder, caso a plataforma não o detecte automaticamente. Defina `RAILPACK_JDK_VERSION=21`.
+3. Crie um PostgreSQL gerenciado (por exemplo, em um provedor compatível com PostgreSQL) e configure no serviço: `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `APP_SECURITY_USERNAME` e `APP_SECURITY_PASSWORD`.
+4. Gere um domínio público nas configurações de networking do serviço. A aplicação usa automaticamente `PORT` e exige autenticação HTTP Basic.
 
-Para publicar, configure `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `APP_SECURITY_USERNAME` e `APP_SECURITY_PASSWORD` como variáveis/segredos no provedor. A porta usa automaticamente a variável `PORT`, com fallback para `8080`. Em bancos gerenciados, use a URL JDBC e SSL exigidas pelo provedor.
-
-Não há demo pública configurada neste repositório ainda. Ao publicar, use somente dados fictícios e crie credenciais descartáveis para demonstração; não publique senhas reais no README. Planos gratuitos de hospedagem podem suspender o serviço por inatividade e demorar para responder à primeira requisição. Confirme as regras e a política de retenção do banco escolhido antes de compartilhar o link.
+Use somente dados fictícios e credenciais descartáveis para demonstração; não publique senhas no README. Hospedagem e bancos em planos gratuitos podem suspender serviços, ter limites de uso ou alterar suas condições. Confirme as regras atuais dos provedores escolhidos antes de divulgar a demo. Ainda não há uma demo pública configurada.
 
 ## Próximas melhorias
 
